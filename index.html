@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Your Name, Anu! 🌸</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: radial-gradient(circle at center, #1f1c2c, #0b0a10);
+      color: #fff;
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #ff9770;
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-bottom: 30px;
+    }
+
+    /* Cards Grid Layout */
+    .cards-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    /* Card Flip Effect */
+    .card {
+      background-color: transparent;
+      width: 30%;
+      height: 140px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      border-radius: 16px;
+    }
+
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Card Front (Ulta Card) */
+    .card-front {
+      background: linear-gradient(135deg, #ff70a6, #ff9770);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    /* Card Back (Seedha Card) */
+    .card-back {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 2px solid #ff9770;
+      color: white;
+      transform: rotateY(180deg);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .card-back.correct {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+      border-color: #fff;
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+
+    /* Reset Button */
+    .reset-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #ccc;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+    .reset-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    /* Status Message */
+    #status {
+      min-height: 30px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #ffd166;
+      margin-bottom: 15px;
+    }
+
+    /* Particles Animation */
+    .particle {
+      position: fixed;
+      font-size: 24px;
+      animation: floatUp 2s ease-out forwards;
+      pointer-events: none;
+      z-index: 999;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-160px) scale(1.6); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Find Your Name, Anu! 🌸</h1>
+    <p class="subtitle">Teeno cards me se apna sahi naam choose karo 😉</p>
+
+    <div id="status">Guess the right card! 🎯</div>
+
+    <div class="cards-grid">
+      <!-- Card 1 -->
+      <div class="card" onclick="flipCard(this, false, 'Wrong Card! 😜')">
+        <div class="card-inner">
+          <div class="card-front">❓</div>
+          <div class="card-back">❌<br>Not This!</div>
+        </div>
+      </div>
+
+      <!-- Card 2 (Correct One) -->
+      <div class="card" onclick="flipCard(this, true, 'A N U ❤️')">
+        <div class="card-inner">
+          <div class="card-front">❓</div>
+          <div class="card-back correct">A N U ✨</div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card" onclick="flipCard(this, false, 'Try Again! 😂')">
+        <div class="card-inner">
+          <div class="card-front">❓</div>
+          <div class="card-back">❌<br>Oops!</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetGame()">Shuffle Cards 🔄</button>
+  </div>
+
+  <script>
+    let isGameOver = false;
+
+    function flipCard(cardElement, isCorrect, backText) {
+      if (cardElement.classList.contains('flipped') || isGameOver) return;
+
+      cardElement.classList.add('flipped');
+
+      if (isCorrect) {
+        isGameOver = true;
+        document.getElementById("status").innerHTML = "🎉 Winner! Best Sister Ever - ANU 🌸✨";
+        
+        // Stars/Celebration particle effect on win
+        const rect = cardElement.getBoundingClientRect();
+        for (let i = 0; i < 20; i++) {
+          const p = document.createElement('div');
+          p.classList.add('particle');
+          p.innerHTML = ['👑', '⭐', '🌸', '✨', '🎁', '💖'][Math.floor(Math.random() * 6)];
+          p.style.left = (rect.left + rect.width / 2 + (Math.random() * 120 - 60)) + 'px';
+          p.style.top = (rect.top + (Math.random() * 40 - 20)) + 'px';
+          document.body.appendChild(p);
+
+          setTimeout(() => { p.remove(); }, 2000);
+        }
+      } else {
+        document.getElementById("status").innerHTML = "Galat card! Phir se try karo 😜";
+      }
+    }
+
+    function resetGame() {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => card.classList.remove('flipped'));
+      document.getElementById("status").innerHTML = "Guess the right card! 🎯";
+      isGameOver = false;
+    }
+  </script>
+</body>
+</html>
